@@ -23,11 +23,9 @@ Route::get('cache', function () {
 
 Route::get('/', 'Auth\LoginController@index');
 Route::get('locale/{locale}', function ($locale) {
-	/*Session::put('locale', $locale);
-    App::setLocale($locale);*/
 	App::setLocale($locale);
 	session()->put('locale', $locale);
-	return redirect()->back();
+	return redirect()->back()->withInput(Request::all());
 });
 
 Route::get('save-filter/{year}', function ($year) {

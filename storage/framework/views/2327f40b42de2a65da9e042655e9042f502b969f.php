@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title',"Reason for Dropout"); ?>
 
 <?php $__env->startSection('breadcrumb'); ?>

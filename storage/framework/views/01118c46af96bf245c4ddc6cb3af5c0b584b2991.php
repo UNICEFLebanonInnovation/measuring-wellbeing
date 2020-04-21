@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 <div style="width: 600px; margin:auto; background-color: #F7F7F7; padding-bottom: 30px; border-top-left-radius: 10px; border-top-right-radius: 10px; box-shadow: 0px 0px 10px 1px #00000021; margin-bottom: 30px;">
     <div style="width: 100%;padding: 20px 0px;text-align: center;border-top-left-radius: 0;border-top-right-radius: 0;">

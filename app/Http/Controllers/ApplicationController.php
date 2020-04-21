@@ -39,62 +39,68 @@ class ApplicationController extends Controller {
 			->leftJoin('gouvernate','gouvernate.id','application_value.gouvarnate')
 			->where('application_value.type', "post_test")
 			->orderBy('application.id','desc');*/
+		$data1 = array();
+		$gov = Gouvernate::all();
+		foreach($gov as $g){
 
-		$data = Gouvernate::select('application.*', 'part.name as partner_name', 'col.firstname as collector_name', 'status.name as status_name','gouvernate.name as gov_name')
-			->leftJoin('application_value','application_value.gouvarnate','gouvernate.id')
-			->leftJoin('application', 'application.id', 'application_value.application_id')
+			$data = Application::select('application.*', 'part.name as partner_name', 'col.firstname as collector_name', 'status.name as status_name','gouvernate.name as gov_name')
 			->leftJoin('users as col', 'col.id', 'application.collector_id')
 			->join('collectors', 'collectors.user_id', 'application.collector_id')
 			->leftJoin('partners as part', 'part.user_id', 'collectors.partner_id')
 			->leftJoin('status', 'status.id', 'application.status')
-			->where('application_value.type', "pre_test")
-			->distinct()
+			->leftJoin('application_value', 'application_value.application_id', 'application.id')
+			->leftJoin('gouvernate','gouvernate.id','application_value.gouvarnate')
+			->where('application_value.type', "post_test")
+			->where('application_value.gouvarnate', $g->id)
 			->orderBy('application.id','desc');
-		if (isset($formData['code']) && !empty($formData['code'])) {
-			$data->where('application.code', 'like', "%" . $formData['code'] . "%");
-		}
-		if (isset($formData['pre_test_date']) && !empty($formData['pre_test_date'])) {
-			$data->where('application.pre_test_date', 'like', "%" . $formData['pre_test_date'] . "%");
-		}
-		if (isset($formData['post_test_date']) && !empty($formData['post_test_date'])) {
-			$data->where('application.post_test_date', 'like', "%" . $formData['post_test_date'] . "%");
-		}
-		if (Auth::user()->hasrole('partner')) {
-			if (isset($formData['collector']) && !empty($formData['collector'])) {
-				$data->where('application.collector_id', $formData['collector']);
-			} else {
-				$data->where('application.partner_id', Auth::user()->id);
-				$collectors = Collector::select('user_id')->where('partner_id', Auth::user()->id)->get()->toArray();
-				$data->orWhereIn('application.collector_id', $collectors);
+			if (isset($formData['code']) && !empty($formData['code'])) {
+				$data->where('application.code', 'like', "%" . $formData['code'] . "%");
 			}
-		}
+			if (isset($formData['pre_test_date']) && !empty($formData['pre_test_date'])) {
+				$data->where('application.pre_test_date', 'like', "%" . $formData['pre_test_date'] . "%");
+			}
+			if (isset($formData['post_test_date']) && !empty($formData['post_test_date'])) {
+				$data->where('application.post_test_date', 'like', "%" . $formData['post_test_date'] . "%");
+			}
+			if (Auth::user()->hasrole('partner')) {
+				if (isset($formData['collector']) && !empty($formData['collector'])) {
+					$data->where('application.collector_id', $formData['collector']);
+				} else {
+					$data->where('application.partner_id', Auth::user()->id);
+					$collectors = Collector::select('user_id')->where('partner_id', Auth::user()->id)->get()->toArray();
+					$data->orWhereIn('application.collector_id', $collectors);
+				}
+			}
 
-		if (Auth::user()->hasrole('admin')) {
-			if (isset($formData['partner']) && !empty($formData['partner']) && empty($formData['collector'])) {
-				$data->where('application.partner_id', $formData['partner']);
-				$collectors = Collector::select('user_id')->where('partner_id', $formData['partner'])->get()->toArray();
-				$data->orWhereIn('application.collector_id', $collectors);
-			} elseif (isset($formData['partner']) && !empty($formData['partner']) && isset($formData['collector']) && !empty($formData['collector'])) {
-				$data->where('application.partner_id', $formData['partner']);
-				$data->where('application.collector_id', $formData['collector']);
-			} elseif (!empty($formData['collector'])) {
-				$data->where('application.collector_id', $formData['collector']);
+			if (Auth::user()->hasrole('admin')) {
+				if (isset($formData['partner']) && !empty($formData['partner']) && empty($formData['collector'])) {
+					$data->where('application.partner_id', $formData['partner']);
+					$collectors = Collector::select('user_id')->where('partner_id', $formData['partner'])->get()->toArray();
+					$data->orWhereIn('application.collector_id', $collectors);
+				} elseif (isset($formData['partner']) && !empty($formData['partner']) && isset($formData['collector']) && !empty($formData['collector'])) {
+					$data->where('application.partner_id', $formData['partner']);
+					$data->where('application.collector_id', $formData['collector']);
+				} elseif (!empty($formData['collector'])) {
+					$data->where('application.collector_id', $formData['collector']);
+				}
 			}
+			if (Auth::user()->hasrole('collector')) {
+				$data->where('application.collector_id', Auth::user()->id);
+			}
+			if (isset($formData['status']) && !empty($formData['status'])) {
+				$data->where('application.status', $formData['status']);
+			}
+			if (isset($formData['governorate_filter']) && !empty($formData['governorate_filter'])) {
+				$data->where('gouvernate.id', $formData['governorate_filter']);
+			}
+			if(Session::has('from') && !empty(Session::get('from'))){
+				$data->take(Session::get('from'));
+				/*$data->where('application.id',"<=",Session::get('to'));*/
+	        }
+	        $data = $data->get();
+	       	$data1 = $data->merge($data1);
 		}
-		if (Auth::user()->hasrole('collector')) {
-			$data->where('application.collector_id', Auth::user()->id);
-		}
-		if (isset($formData['status']) && !empty($formData['status'])) {
-			$data->where('application.status', $formData['status']);
-		}
-		if (isset($formData['governorate_filter']) && !empty($formData['governorate_filter'])) {
-			$data->where('gouvernate.id', $formData['governorate_filter']);
-		}
-		if((Session::has('from') && !empty(Session::get('from')))){
-			$data->take(Session::get('from'));
-			/*$data->where('application.id',"<=",Session::get('to'));*/
-        }
-		return datatables()->of($data)
+		return datatables()->of($data1)
 			->addColumn('partner', function ($data) {
 				return ucfirst($data->partner_name);
 			})

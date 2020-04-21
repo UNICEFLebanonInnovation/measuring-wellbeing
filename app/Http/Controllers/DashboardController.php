@@ -24,17 +24,17 @@ class DashboardController extends Controller
 
     public function index(Request $request){
 
+        $partners 		= Partner::all();
+
+    	$collectors 	= Collector::all();
     	if(Auth::user()->hasRole('collector')){
 
-            $partners 		= Partner::all();
-
-	    	$collectors 	= Collector::all();
 
 	    	return view('admin.application.list',compact('partners','collectors'));
 
         }
 
-    	return view('admin.dashboard');
+    	return view('admin.dashboard',compact('partners','collectors'));
 
     }
 
@@ -49,7 +49,11 @@ class DashboardController extends Controller
     		$data 		= Partner::select('partners.*','users.firstname','users.lastname')
 
     			->leftJoin('users','users.id','partners.user_id');
-
+    			if (Auth::user()->hasrole('admin')) {
+					if (isset($formData['partner']) && !empty($formData['partner']) && empty($formData['collector'])) {
+						$data->where('partners.user_id', $formData['partner']);
+					}
+				}
     		return datatables()->of($data)
 
 	    		->addColumn('name',function($data){
@@ -325,11 +329,12 @@ class DashboardController extends Controller
 
             	}
 
+
     		return datatables()->of($data)
 
 	    		->addColumn('name',function($data){
 
-	               	return ucfirst($data->name);
+	               	return ucfirst($data->firstname." ".$data->lastname);
 
 	            })
 

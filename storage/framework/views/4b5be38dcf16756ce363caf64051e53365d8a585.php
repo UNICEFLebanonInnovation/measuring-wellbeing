@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title',"Partner Detail"); ?>
 
 <?php $__env->startSection('breadcrumb'); ?>

@@ -1,6 +1,4 @@
-
-
-<?php $__env->startSection('title',"Add Application"); ?>
+<?php $__env->startSection('title',"Change Collector"); ?>
 
 <?php $__env->startSection('breadcrumb'); ?>
 	<a href="<?php echo e(url('/application-list')); ?>">Application List</a>
@@ -24,7 +22,7 @@
 							<i class="la la-gear"></i>
 						</span>
 						<h3 class="m-portlet__head-text">
-							Add Application
+							Change Collector
 						</h3>
 					</div>
 				</div>
@@ -40,7 +38,7 @@
 							<select class="form-control m-input" id="collector" name="collector">
 								<option value="">Select Collector</option>
 								<?php $__currentLoopData = $collectors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $col): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-									<option value="<?php echo e($col->user_id); ?>" <?php echo e($applicationObj->collector_id == $col->user_id ? 'selected':''); ?>><?php echo e(ucfirst($col->name)); ?></option>
+									<option value="<?php echo e($col->user_id); ?>" <?php echo e($applicationObj->collector_id == $col->user_id ? 'selected':''); ?>><?php echo e(ucfirst($col->firstname." ".$col->lastname)); ?></option>
 								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 							</select>
 							<?php if($errors->has('collector')): ?>

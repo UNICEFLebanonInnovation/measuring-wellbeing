@@ -26,14 +26,6 @@
 
 <?php echo $__env->make('admin.layout.flash', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-
-
-
-
-<!--end:: Widgets/Stats-->
-
-
-
 <?php if(auth()->check() && auth()->user()->hasAnyRole("admin|partner")): ?>
 
 <div class="row">
@@ -73,6 +65,30 @@
 				<table class="table table-striped- table-bordered table-hover table-checkable" id="m_table_1">
 
 					<thead>
+						<?php if(auth()->check() && auth()->user()->hasRole('admin')): ?>
+						<tr>
+							<th>
+								<?php if(auth()->check() && auth()->user()->hasRole('admin')): ?>
+								<select name="partner" id="partner" class="form-control select-filter m-input">
+									<option value="">Select Partner</option>
+									<?php $__currentLoopData = $partners; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $partner): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+										<option value="<?php echo e($partner->user_id); ?>" ><?php echo e(ucfirst($partner->name)); ?></option>
+									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+								</select>
+								<?php endif; ?>
+							</th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+						<?php endif; ?>
 
 						<tr>
 
@@ -170,6 +186,10 @@
 
 		        });
 
+		        $('#partner').change(function(){
+		        	getPartner();
+		        });
+
 
 
 		        $('#year').change(function(){
@@ -208,7 +228,8 @@
 
 		        	data: {
 
-				        "_token": "<?php echo e(csrf_token()); ?>"
+				        "_token": "<?php echo e(csrf_token()); ?>",
+				        "partner": $('#partner').val()
 
 			        }
 

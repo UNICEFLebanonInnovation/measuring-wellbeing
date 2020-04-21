@@ -59,9 +59,9 @@ class CollectorsController extends Controller
 	                if(Auth::user()->hasrole('partner')){
 	                	$actions .= $edit;
 	                }
-                	$actions .= $status;
+                	//$actions .= $status;
                 	$actions .= '</div></span>';
-                	if(!intval(Auth::user()->is_readonly)){
+                	if(Auth::user()->hasrole('partner')){
                 		return $actions;
                 	}else{
                 		return "";

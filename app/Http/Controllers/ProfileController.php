@@ -25,7 +25,6 @@ class ProfileController extends Controller
             	]);
             	$users->password 		= Hash::make($formData['password']);
             	$users->remember_token 	= "";
-                $users->is_active       = 1;
             	$users->save();
             	if($users->hasrole('partner')){
             		$partnerObj = Partner::where('user_id',$users->id)

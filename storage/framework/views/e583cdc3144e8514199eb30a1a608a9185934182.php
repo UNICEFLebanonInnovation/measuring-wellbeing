@@ -317,14 +317,12 @@
 		        	}
 
 		        })
-				setTimeout(function() {
-			        $("#flash_alert").remove();
+				setTimeout(function() {	
+					$("#flash_alert").remove();
 
 			    }, 3000);
-
 			    setTimeout(function() {
-					$('#filterrange').remove();
-
+			    	$('#filterrange').remove();
 			    }, 20000);
 
 			})

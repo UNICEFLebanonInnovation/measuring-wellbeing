@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('title',"Add Application")
+@section('title',"Change Collector")
 
 @section('breadcrumb')
 	<a href="{{ url('/application-list') }}">Application List</a>
@@ -24,7 +24,7 @@
 							<i class="la la-gear"></i>
 						</span>
 						<h3 class="m-portlet__head-text">
-							Add Application
+							Change Collector
 						</h3>
 					</div>
 				</div>
@@ -40,7 +40,7 @@
 							<select class="form-control m-input" id="collector" name="collector">
 								<option value="">Select Collector</option>
 								@foreach($collectors as $col)
-									<option value="{{ $col->user_id }}" {{ $applicationObj->collector_id == $col->user_id ? 'selected':'' }}>{{ ucfirst($col->name) }}</option>
+									<option value="{{ $col->user_id }}" {{ $applicationObj->collector_id == $col->user_id ? 'selected':'' }}>{{ ucfirst($col->firstname." ".$col->lastname) }}</option>
 								@endforeach
 							</select>
 							@if ($errors->has('collector'))
